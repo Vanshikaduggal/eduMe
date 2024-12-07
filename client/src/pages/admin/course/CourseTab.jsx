@@ -28,6 +28,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const CourseTab = () => {
+  const navigate = useNavigate();
+  const params = useParams();
+  const courseId = params.courseId;
+
+  // State variables
   const [input, setInput] = useState({
     courseTitle: "",
     subTitle: "",
@@ -37,65 +42,61 @@ const CourseTab = () => {
     coursePrice: "",
     courseThumbnail: "",
   });
-  const params = useParams();
-  const courseId = params.courseId;
-  const { data: courseByIdData, isLoading: courseByIdLoading } =
-    useGetCourseByIdQuery(courseId,{refetchOnMountOrArgChange:true});
-;
 
+  const [previewThumbnail, setPreviewThumbnail] = useState("");
+
+  // API hooks
+  const { data: courseByIdData, isLoading: courseByIdLoading } =
+    useGetCourseByIdQuery(courseId, { refetchOnMountOrArgChange: true });
+
+  const [editCourse, { data, isLoading, isSuccess, error }] =
+    useEditCourseMutation();
+
+  // Load course data on initial render
   useEffect(() => {
     if (courseByIdData?.course) {
-        const course = courseByIdData?.course
+      const course = courseByIdData.course;
       setInput({
         courseTitle: course.courseTitle,
         subTitle: course.subTitle,
         description: course.description,
         category: course.category,
-        courseLevel:course.courseLevel,
+        courseLevel: course.courseLevel,
         coursePrice: course.coursePrice,
         courseThumbnail: "",
       });
     }
-  }, [course]);
-  const [previewThumbnail, setPreviewThumbnail] = useState("");
-  const [editCourse, { data, isLoading, isSuccess, error }] =
-    useEditCourseMutation();
+  }, [courseByIdData]);
 
+  // Handle form input changes
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
-    setInput({ ...input, [name]: value });
+    setInput((prev) => ({ ...prev, [name]: value }));
   };
 
-  const selectCategory = (value) => {
-    setInput({ ...input, category: value });
-  };
-  const selectCourseLevel = (value) => {
-    setInput({ ...input, courseLevel: value });
-  };
+  // Select options handlers
+  const selectCategory = (value) => setInput((prev) => ({ ...prev, category: value }));
+  const selectCourseLevel = (value) => setInput((prev) => ({ ...prev, courseLevel: value }));
 
-  //get file
+  // Thumbnail upload handler
   const selectThumbnail = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      setInput({ ...input, courseThumbnail: file });
-      const fileReader = new FileReader(); //to make the file preview
+      setInput((prev) => ({ ...prev, courseThumbnail: file }));
+      const fileReader = new FileReader();
       fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
       fileReader.readAsDataURL(file);
     }
   };
 
+  // Handle course update
   const updateCourseHandler = async () => {
     const formData = new FormData();
-    formData.append("courseTitle", input.courseTitle);
-    formData.append("subTitle", input.subTitle);
-    formData.append("description", input.description);
-    formData.append("category", input.category);
-    formData.append("courseLevel", input.courseLevel);
-    formData.append("coursePrice", input.coursePrice);
-    formData.append("courseThumbnail", input.courseThumbnail);
+    Object.entries(input).forEach(([key, value]) => formData.append(key, value));
     await editCourse({ formData, courseId });
   };
 
+  // Toast notifications
   useEffect(() => {
     if (isSuccess) {
       toast.success(data?.message || "Course Updated");
@@ -105,10 +106,10 @@ const CourseTab = () => {
     }
   }, [isSuccess, error, data]);
 
-  if(courseByIdLoading) return <h1>Loading...</h1>
+  // Loading state
+  if (courseByIdLoading) return <h1>Loading...</h1>;
 
-  const isPublished = false;
-  const navigate = useNavigate();
+  // Render component
   return (
     <div>
       <Card>
@@ -119,9 +120,9 @@ const CourseTab = () => {
               Make changes to your courses here. Click save when you are done.
             </CardDescription>
           </div>
-          <div className="space-x-2 ">
+          <div className="space-x-2">
             <Button variant="outline">
-              {isPublished ? "UnPublished" : "Publish"}
+              {false ? "UnPublish" : "Publish"}
             </Button>
             <Button>Remove Course</Button>
           </div>
@@ -135,7 +136,7 @@ const CourseTab = () => {
                 name="courseTitle"
                 value={input.courseTitle}
                 onChange={changeEventHandler}
-                placeholder="Ex :Full Stack Developer"
+                placeholder="Ex: Full Stack Developer"
               />
             </div>
             <div>
@@ -145,7 +146,7 @@ const CourseTab = () => {
                 name="subTitle"
                 value={input.subTitle}
                 onChange={changeEventHandler}
-                placeholder="Ex :Become a Fullstack Developer from zero to Hero in 2 months"
+                placeholder="Ex: Become a Fullstack Developer from zero to Hero in 2 months"
               />
             </div>
             <div>
@@ -186,7 +187,7 @@ const CourseTab = () => {
                 <Label>Course Level</Label>
                 <Select onValueChange={selectCourseLevel}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select a course Level" />
+                    <SelectValue placeholder="Select a course level" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -199,7 +200,7 @@ const CourseTab = () => {
                 </Select>
               </div>
               <div>
-                <Label>Price in (INR)</Label>
+                <Label>Price (INR)</Label>
                 <Input
                   type="number"
                   name="coursePrice"
@@ -227,10 +228,7 @@ const CourseTab = () => {
               )}
             </div>
             <div>
-              <Button
-                variant="outline"
-                onClick={() => navigate("/admin/course")}
-              >
+              <Button variant="outline" onClick={() => navigate("/admin/course")}>
                 Cancel
               </Button>
               <Button
