@@ -90,7 +90,7 @@ const Navbar = () => {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator className="border-t dark:border-gray-800" />
                 <DropdownMenuItem className="px-3 py-2 rounded-lg text-l text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer">
-                  Dashboard
+                  <Link to="/admin/course">Dashboard</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

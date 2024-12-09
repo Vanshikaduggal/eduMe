@@ -10,7 +10,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { DialogTitle } from "@radix-ui/react-dialog";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Course from "./Course";
@@ -21,7 +20,7 @@ import {
 import { toast } from "sonner";
 
 const Profile = () => {
-  const { data, isLoading: isUserLoading,refetch } = useLoadUserQuery();
+  const { data, isLoading: isUserLoading, refetch } = useLoadUserQuery();
   const [name, setName] = useState("");
   const [profilePhoto, setProfilePhoto] = useState("");
 
@@ -44,17 +43,16 @@ const Profile = () => {
   useEffect(() => {
     if (isSuccess) {
       refetch();
-      toast.success(updateUserData?.message || "Profile Updated.");
+      toast.success(updateUserData?.message || "Profile updated successfully.");
     } else if (isError) {
-      toast.error(error?.data?.message || "Failed to Update Profile.");
+      toast.error(error?.data?.message || "Failed to update profile.");
     }
   }, [isSuccess, isError, updateUserData, error, refetch]);
-  
-  
-  if (isUserLoading) return <h1>Profile Loading...</h1>;
-  if (!data || !data.user) return <h1>Failed to load profile data</h1>;
 
-  const { user } = data || { user: {} };
+  if (isUserLoading) return <h1>Loading profile...</h1>;
+  if (!data || !data.user) return <h1>Failed to load profile data.</h1>;
+
+  const { user } = data;
 
   const updateUserHandler = async () => {
     if (!name || !profilePhoto) {
@@ -68,10 +66,6 @@ const Profile = () => {
 
     await updateUser(formData);
   };
-
-  useEffect(()=>{
-    refetch();
-  },[])
 
   return (
     <div className="max-w-4xl mx-auto px-4 my-24">
@@ -88,25 +82,25 @@ const Profile = () => {
           </Avatar>
         </div>
         <div>
-          <div className="mb-2 ">
+          <div className="mb-2">
             <h1 className="font-semibold text-gray-900 dark:text-gray-100">
-              Name :
+              Name:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
                 {user.name}
               </span>
             </h1>
           </div>
-          <div className="mb-2 ">
+          <div className="mb-2">
             <h1 className="font-semibold text-gray-900 dark:text-gray-100">
-              Email :
+              Email:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
                 {user.email}
               </span>
             </h1>
           </div>
-          <div className="mb-2 ">
+          <div className="mb-2">
             <h1 className="font-semibold text-gray-900 dark:text-gray-100">
-              Role :
+              Role:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
                 {user.role.toUpperCase()}
               </span>
@@ -118,10 +112,9 @@ const Profile = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Edit Profile</DialogTitle>
+                <h2 className="text-lg font-semibold">Edit Profile</h2>
                 <DialogDescription>
-                  Make Changes to your Profile here. Click save when you're
-                  done.
+                  Make changes to your profile here. Click save when you're done.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -150,7 +143,7 @@ const Profile = () => {
                   {isUpdatingUser ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
-                      Wait
+                      wait
                     </>
                   ) : (
                     "Save Changes"
@@ -162,11 +155,10 @@ const Profile = () => {
         </div>
       </div>
 
-      {/*Display the enrolled courses */}
       <div>
         <h1 className="font-medium text-lg">Courses you're enrolled in</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-5">
-          {user.enrolledCourses.length === 0 ? (
+          {user.enrolledCourses?.length === 0 ? (
             <h1>You haven't enrolled in any course</h1>
           ) : (
             user.enrolledCourses.map((course) => (
