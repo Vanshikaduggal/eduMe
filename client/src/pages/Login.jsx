@@ -1,3 +1,4 @@
+// McgPr7oX7v1mMcbN
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -45,7 +46,6 @@ const Login = () => {
       isSuccess: loginIsSuccess,
     },
   ] = useLoginUserMutation();
-
   const navigate = useNavigate();
 
   const changeInputHandler = (e, type) => {
@@ -63,33 +63,27 @@ const Login = () => {
     await action(inputData);
   };
 
-  const getErrorMessage = (error) => {
-    if (!error) return "An unknown error occurred";
-    return error.data?.message || error.message || "An error occurred";
-  };
-
   useEffect(() => {
-    if (registerIsSuccess && registerData) {
-      toast.success(registerData.message || "Signup successful.");
+    if(registerIsSuccess && registerData){
+      toast.success(registerData.message || "Signup successful.")
     }
-    if (registerError) {
-      toast.error(getErrorMessage(registerError));
+    if(registerError){
+      toast.error(registerError.data.message || "Signup Failed");
     }
-    if (loginIsSuccess && loginData) {
+    if(loginIsSuccess && loginData){
       toast.success(loginData.message || "Login successful.");
       navigate("/");
     }
-    if (loginError) {
-      toast.error(getErrorMessage(loginError));
+    if(loginError){ 
+      toast.error(loginError.data.message || "login Failed");
     }
   }, [
-    registerIsSuccess,
-    registerData,
-    registerError,
-    loginIsSuccess,
+    loginIsLoading,
+    registerIsLoading,
     loginData,
+    registerData,
     loginError,
-    navigate,
+    registerError,
   ]);
 
   return (
@@ -116,7 +110,7 @@ const Login = () => {
                   value={signupInput.name}
                   onChange={(e) => changeInputHandler(e, "signup")}
                   placeholder="Eg. patel"
-                  required
+                  required="true"
                 />
               </div>
               <div className="space-y-1">
@@ -127,7 +121,7 @@ const Login = () => {
                   value={signupInput.email}
                   onChange={(e) => changeInputHandler(e, "signup")}
                   placeholder="Eg. patel@gmail.com"
-                  required
+                  required="true"
                 />
               </div>
               <div className="space-y-1">
@@ -138,7 +132,7 @@ const Login = () => {
                   value={signupInput.password}
                   onChange={(e) => changeInputHandler(e, "signup")}
                   placeholder="Eg. xyz"
-                  required
+                  required="true"
                 />
               </div>
             </CardContent>
@@ -176,7 +170,7 @@ const Login = () => {
                   value={loginInput.email}
                   onChange={(e) => changeInputHandler(e, "login")}
                   placeholder="Eg. patel@gmail.com"
-                  required
+                  required="true"
                 />
               </div>
               <div className="space-y-1">
@@ -187,7 +181,7 @@ const Login = () => {
                   value={loginInput.password}
                   onChange={(e) => changeInputHandler(e, "login")}
                   placeholder="Eg. xyz"
-                  required
+                  required="true"
                 />
               </div>
             </CardContent>
