@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
     name:{
         type:String,
-        required:true,
+        required:true
     },
     email:{
         type:String,
-        required:true,
+        required:true
     },
     password:{
         type:String,
@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
     },
     role:{
         type:String,
-        enum:["student","instructor"],
+        enum:["instructor", "student"],
         default:'student'
     },
     enrolledCourses:[
@@ -28,6 +28,6 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:""
     }
-},{timestamps:true})
+},{timestamps:true});
 
 export const User = mongoose.model("User", userSchema);

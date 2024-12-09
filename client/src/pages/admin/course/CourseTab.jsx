@@ -139,7 +139,7 @@ const CourseTab = () => {
           <Button disabled={courseByIdData?.course.lectures.length === 0} variant="outline" onClick={()=> publishStatusHandler(courseByIdData?.course.isPublished ? "false" : "true")}>
             {courseByIdData?.course.isPublished ? "Unpublished" : "Publish"}
           </Button>
-            <Button>Remove Course</Button>
+            <Button className="bg-rose-600">Remove Course</Button>
           </div>
         </CardHeader>
         <CardContent>

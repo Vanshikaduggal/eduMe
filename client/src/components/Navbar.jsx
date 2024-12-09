@@ -71,9 +71,9 @@ const Navbar = () => {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>
+                  {/*<DropdownMenuItem>
                     <Link to="my-learning">My learning</Link>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem>*/}
                   <DropdownMenuItem>
                     {" "}
                     <Link to="profile">Edit Profile</Link>{" "}
@@ -85,7 +85,7 @@ const Navbar = () => {
                 {user?.role === "instructor" && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem><Link to="/admin/dashboard">Dashboard</Link></DropdownMenuItem>
+                    <DropdownMenuItem><Link to="/admin/course">Dashboard</Link></DropdownMenuItem>
                   </>
                 )}
               </DropdownMenuContent>
